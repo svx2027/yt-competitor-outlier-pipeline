@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+*.egg-info/
+
+# Generated pipeline output (per-run; commit specific samples deliberately, not this whole dir)
+out/*
+!out/.gitkeep
+
+# Logs and temp
+*.log
+*.tmp
+
+# Secrets (unused today, kept as a guard if any script ever needs one)
+.env
+.env.local
+*.pem
+*.key
+client_secret.json
+token.json
