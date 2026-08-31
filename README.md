@@ -20,10 +20,16 @@ public pages.
    window, flagged at 3x (formats with 500+ videos in-window) or 5x (smaller
    samples, where a median is noisier and needs a wider margin before a spike
    counts as real).
+3. **Verify** that the discovery pull was actually complete
+   (`verify_recount.py`): re-derives the in-window video-id set on a
+   *separate* code path -- a fresh, wide `--playlist-items` re-fetch around
+   each recorded boundary, not a rerun of the discovery script's own logic --
+   and reconciles it against the delivered CSV id by id, not by count alone.
+   See [docs/VERIFICATION.md](docs/VERIFICATION.md) for why a count match
+   isn't good enough and how to read the reconcile output.
 
-A verification layer that independently re-derives the pull and reconciles
-video-id sets is landing next, along with a worked sample run against a
-public channel -- see "Honest scope" below.
+A worked example run against a real public channel, with its output
+committed as a sample, is landing next -- see "Honest scope" below.
 
 ## Why format-aware, and why two numbers
 
@@ -60,6 +66,8 @@ neither replaces the other.
   ran," not "as of publish + N days." Comparing videos of very different ages
   works better as views-per-day than raw views; that normalization is left to
   the caller for now.
+- **A discovery pull is not trusted until it is independently re-derived.**
+  See `verify_recount.py` above and [docs/VERIFICATION.md](docs/VERIFICATION.md).
 
 ## Running it
 
@@ -80,22 +88,36 @@ used to namespace this channel's output files under `out/`, so you can run
 the pipeline against several channels without them overwriting each other.
 `--from`/`--to` are required (no baked-in default window). `--tz-offset-minutes`
 (default 0, UTC) sets the timezone the window and the per-video dates are
-computed in -- pass e.g. `330` for IST if that matches the channel's audience.
+computed in -- pass e.g. `-300` for US Eastern or `60` for CET if that matches
+the channel's audience.
+
+### Verifying a pull
+
+```bash
+python3 scripts/verify_recount.py <handle> <slug> \
+    --from 2024-01-01 --to 2024-06-30
+```
+
+Same `<handle>`, `<slug>`, `--from`/`--to`, and `--tz-offset-minutes` as the
+`pull_channel_window.py` run being checked. It re-fetches around the recorded
+window boundary on a separate code path and writes
+`out/<slug>_recount.json` with the reconcile verdict. Full explanation of the
+method and how to read a `DIFF` result: [docs/VERIFICATION.md](docs/VERIFICATION.md).
 
 ## Honest scope
 
-This is a scaffold-and-core-engine push. What's live now:
+This is a discovery-plus-scoring-plus-verification push. What's live now:
 - Channel-tab discovery with windowing, buffering, and chunked, threaded
   fetching. Fetch progress is not yet persisted across runs -- an
   interrupted pull currently restarts from scratch rather than resuming;
   that's a known gap, not a design goal met.
 - Format-aware outlier scoring with the two-lens reporting above.
+- Independent completeness verification: a separate-code-path recount that
+  reconciles the delivered pull's video-id set, per format, against a fresh
+  re-fetch -- not just a count comparison.
 
-What's not here yet: the independent verification pass (a fresh re-pull that
-reconciles video-id sets against the delivered output, catching anything the
-main pull silently missed), and a worked example run against a real public
-channel with its output committed as a sample. Both are the next two pieces
-of this pipeline.
+What's not here yet: a worked example run against a real public channel with
+its output committed as a sample. That's the next piece of this pipeline.
 
 ## Layout
 
@@ -103,6 +125,9 @@ of this pipeline.
 scripts/
   pull_channel_window.py   discovery + windowed fetch -> out/<slug>_in_window.csv
   compute_outliers.py      format-aware outlier scoring -> out/<slug>_outliers.csv
+  verify_recount.py        independent completeness recount -> out/<slug>_recount.json
+docs/
+  VERIFICATION.md          why a count match isn't enough, and how to read a DIFF
 out/                        generated per-run (gitignored except for committed samples)
 ```
 
