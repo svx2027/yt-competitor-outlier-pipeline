@@ -46,7 +46,7 @@ or captions is added later: authenticate read-only via
 `--cookies-from-browser` and pace requests (a few seconds between videos),
 never fire large batches unpaced.
 
-## Verification doctrine (for the layer landing next)
+## Verification doctrine (implemented: `scripts/verify_recount.py`)
 
 A discovery run is not trusted until it is independently re-derived on a
 *separate* code path: a fresh re-pull of a bounded index range around each
@@ -54,3 +54,17 @@ known boundary, reconciled by exact video-id-set comparison against the
 delivered output -- not just a count match, which can hide an equal number
 of swapped videos. Any video missing on either side is a defect until
 explained, never silently accepted.
+
+`verify_recount.py` implements this: it re-fetches a wide, fixed
+`--playlist-items` range around the boundary `pull_channel_window.py`
+already recorded, using a direct index-range fetch rather than that
+script's binary-search-and-flat-playlist approach, and recomputes window
+membership from its own logic rather than importing the discovery script's.
+Two structurally different paths to the same answer is what makes agreement
+between them real evidence. A yt-dlp row it cannot parse is counted as
+`unreadable`, never silently folded into "not in window" or "confirmed" --
+unknown is not zero. Full detail: `docs/VERIFICATION.md`.
+
+Not yet built: per-video metadata re-verification (view count, duration,
+format) beyond the id-set completeness check above -- see the README's
+"Honest scope" for what's still ahead.
