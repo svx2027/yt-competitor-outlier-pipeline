@@ -1,0 +1,38 @@
+{
+  "handle": "DailyGrindGear",
+  "window": [
+    "2026-06-01",
+    "2026-06-07"
+  ],
+  "tz_offset_minutes": 0,
+  "boundaries": {
+    "long": {
+      "n": 7,
+      "hi_idx": 1,
+      "lo_idx": 6,
+      "slice_start": 0,
+      "slice_end": 7
+    },
+    "short": {
+      "n": 7,
+      "hi_idx": 1,
+      "lo_idx": 6,
+      "slice_start": 0,
+      "slice_end": 7
+    },
+    "live": {
+      "n": 6,
+      "hi_idx": 1,
+      "lo_idx": 4,
+      "slice_start": 0,
+      "slice_end": 6
+    }
+  },
+  "in_window": 14,
+  "by_format": {
+    "long": 5,
+    "short": 5,
+    "live": 4
+  },
+  "missing_in_slice": []
+}

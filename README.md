@@ -28,8 +28,9 @@ public pages.
    See [docs/VERIFICATION.md](docs/VERIFICATION.md) for why a count match
    isn't good enough and how to read the reconcile output.
 
-A worked example run against a real public channel, with its output
-committed as a sample, is landing next -- see "Honest scope" below.
+A worked example run, output committed as a sample, is in
+[docs/sample_run/](docs/sample_run/) -- see "Sample run" below for what it
+covers and why it's offline.
 
 ## Why format-aware, and why two numbers
 
@@ -104,9 +105,24 @@ window boundary on a separate code path and writes
 `out/<slug>_recount.json` with the reconcile verdict. Full explanation of the
 method and how to read a `DIFF` result: [docs/VERIFICATION.md](docs/VERIFICATION.md).
 
+## Sample run
+
+[docs/sample_run/](docs/sample_run/) has a full discover -> score -> verify
+run with its output committed, so you can see the shape of a real delivery
+without running anything. The environment this pipeline's automation runs in
+has no outbound network access to youtube.com, so instead of a live channel
+it runs the real, unmodified `scripts/` against a small, openly synthetic
+video catalog through a documented stand-in for `yt-dlp`. It's shaped to
+exercise the rules that matter: a livestream whose publish-time placeholder
+falls outside the window but whose actual air time falls inside it (must be
+included, dated by air time); a premiere that stays long-form; one
+format-aware outlier per format, not a channel-wide score; and an
+independent recount that reconciles to `ALL MATCH`. Full detail and how to
+reproduce it: [docs/sample_run/README.md](docs/sample_run/README.md).
+
 ## Honest scope
 
-This is a discovery-plus-scoring-plus-verification push. What's live now:
+This is a discovery-plus-scoring-plus-verification pipeline. What's live now:
 - Channel-tab discovery with windowing, buffering, and chunked, threaded
   fetching. Fetch progress is not yet persisted across runs -- an
   interrupted pull currently restarts from scratch rather than resuming;
@@ -115,9 +131,11 @@ This is a discovery-plus-scoring-plus-verification push. What's live now:
 - Independent completeness verification: a separate-code-path recount that
   reconciles the delivered pull's video-id set, per format, against a fresh
   re-fetch -- not just a count comparison.
-
-What's not here yet: a worked example run against a real public channel with
-its output committed as a sample. That's the next piece of this pipeline.
+- A worked sample run against a synthetic catalog (see "Sample run" above).
+  What's not here yet: a worked example run against a real, live public
+  channel -- this cloud environment cannot reach youtube.com; running one
+  from an unrestricted network and committing its output is the natural
+  next step once that's possible.
 
 ## Layout
 

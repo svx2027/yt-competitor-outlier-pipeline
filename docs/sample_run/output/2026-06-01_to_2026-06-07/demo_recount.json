@@ -1,0 +1,48 @@
+{
+  "handle": "DailyGrindGear",
+  "slug": "demo",
+  "window": [
+    "2026-06-01",
+    "2026-06-07"
+  ],
+  "tz_offset_minutes": 0,
+  "verdict": "ALL MATCH -- completeness confirmed",
+  "by_format": {
+    "long": {
+      "independent": 5,
+      "delivered": 5,
+      "only_in_independent": [],
+      "only_in_delivered": [],
+      "unreadable_rows": 0,
+      "playlist_items_range": [
+        1,
+        7
+      ],
+      "status": "MATCH"
+    },
+    "short": {
+      "independent": 5,
+      "delivered": 5,
+      "only_in_independent": [],
+      "only_in_delivered": [],
+      "unreadable_rows": 0,
+      "playlist_items_range": [
+        1,
+        7
+      ],
+      "status": "MATCH"
+    },
+    "live": {
+      "independent": 4,
+      "delivered": 4,
+      "only_in_independent": [],
+      "only_in_delivered": [],
+      "unreadable_rows": 0,
+      "playlist_items_range": [
+        1,
+        6
+      ],
+      "status": "MATCH"
+    }
+  }
+}
