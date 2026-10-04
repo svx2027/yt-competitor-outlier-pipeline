@@ -160,3 +160,13 @@ silently assumed.
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+## Related tools
+
+- [yt-competitor-swipe](https://github.com/svx2027/yt-competitor-swipe): the
+  full daily version of competitive intelligence — many channels, six scoring
+  signals, comment mining, and a dashboard — instead of one channel's outliers.
+- [yt-competitor-research-playbook](https://github.com/svx2027/yt-competitor-research-playbook):
+  the one-time research playbook this pipeline's outlier method is drawn from.
+
+Full index of all public repos: [github.com/svx2027](https://github.com/svx2027).
