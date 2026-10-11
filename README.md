@@ -7,6 +7,13 @@ meaningfully outperformed its own baseline, broken down by format.
 No YouTube Data API key, no quota. Everything comes from `yt-dlp` reading
 public pages.
 
+![Terminal recording of the discover, score, and verify commands running against the repo's fictional DailyGrind Coffee Gear synthetic catalog, ending on an ALL MATCH independent reconcile](docs/demo/outlier_demo.gif)
+
+The three commands above, run back to back against the fictional synthetic
+catalog this repo's sample run uses (see [Sample run](#sample-run) below) —
+real captured output, not a mockup. Regenerate it yourself with
+[`docs/demo/make_terminal_gif.py`](docs/demo/make_terminal_gif.py).
+
 ## What it does
 
 1. **Discover** every video a channel published in a window, by reading its
@@ -146,6 +153,8 @@ scripts/
   verify_recount.py        independent completeness recount -> out/<slug>_recount.json
 docs/
   VERIFICATION.md          why a count match isn't enough, and how to read a DIFF
+  sample_run/              committed discover -> score -> verify output + the synthetic catalog
+  demo/                    the README terminal GIF + its generator (make_terminal_gif.py)
 out/                        generated per-run (gitignored except for committed samples)
 ```
 
