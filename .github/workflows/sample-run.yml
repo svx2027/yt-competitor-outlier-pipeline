@@ -1,0 +1,38 @@
+name: sample-run
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Reproduce the offline sample run (fake yt-dlp stand-in, no network, no API key)
+        run: |
+          python3 docs/sample_run/generate/build_catalog.py
+          chmod +x docs/sample_run/generate/fake_yt_dlp.py
+          mkdir -p /tmp/fake-ytdlp-bin
+          ln -sf "$(pwd)/docs/sample_run/generate/fake_yt_dlp.py" /tmp/fake-ytdlp-bin/yt-dlp
+          export PATH="/tmp/fake-ytdlp-bin:$PATH"
+          python3 scripts/pull_channel_window.py DailyGrindGear demo \
+              --from 2026-06-01 --to 2026-06-07 --tz-offset-minutes 0
+          python3 scripts/compute_outliers.py out/demo_in_window.csv out/demo_outliers.csv
+          python3 scripts/verify_recount.py DailyGrindGear demo \
+              --from 2026-06-01 --to 2026-06-07 --tz-offset-minutes 0
+      - name: Assert the independent re-derivation still says ALL MATCH
+        run: |
+          python3 -c "
+          import json
+          d = json.load(open('out/demo_recount.json'))
+          assert d['verdict'] == 'ALL MATCH -- completeness confirmed', d['verdict']
+          for fmt, row in d['by_format'].items():
+              assert row['status'] == 'MATCH', (fmt, row)
+              assert row['unreadable_rows'] == 0, (fmt, row)
+          print('verify_recount: ALL MATCH confirmed, zero unreadable rows, on every format')
+          "

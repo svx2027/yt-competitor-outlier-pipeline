@@ -1,5 +1,7 @@
 # yt-competitor-outlier-pipeline
 
+[![sample-run](https://github.com/svx2027/yt-competitor-outlier-pipeline/actions/workflows/sample-run.yml/badge.svg)](https://github.com/svx2027/yt-competitor-outlier-pipeline/actions/workflows/sample-run.yml)
+
 A keyless YouTube outlier-detection pipeline: point it at any channel handle
 and a date window, and it tells you which of that channel's uploads
 meaningfully outperformed its own baseline, broken down by format.
@@ -126,6 +128,11 @@ included, dated by air time); a premiere that stays long-form; one
 format-aware outlier per format, not a channel-wide score; and an
 independent recount that reconciles to `ALL MATCH`. Full detail and how to
 reproduce it: [docs/sample_run/README.md](docs/sample_run/README.md).
+`.github/workflows/sample-run.yml` re-runs this exact reproduction on every
+push and pull request (Python 3.11, no secrets, no network) and fails the
+build if `verify_recount.py`'s independent re-derivation ever stops agreeing
+with the delivered rows -- a real regression guard on the pipeline's core
+completeness claim, not a lint-only check.
 
 ## Honest scope
 
